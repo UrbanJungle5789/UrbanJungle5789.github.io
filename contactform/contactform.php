@@ -1,41 +1,58 @@
 <?php
-/**
-* Requires the "PHP Email Form" library
-* The "PHP Email Form" library is available only in the pro version of the template
-* The library should be uploaded to: vendor/php-email-form/php-email-form.php
-* For more info and help: https://bootstrapmade.com/php-email-form/
-*/
 
-// Replace contact@example.com with your real receiving email address
-$receiving_email_address = 'sezeem001@gmail.com';
+$errorMSG = "";
 
-if( file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php' )) {
-include( $php_email_form );
+// NAME
+if (empty($_POST["name"])) {
+    $errorMSG = "Name is required ";
 } else {
-die( 'Unable to load the "PHP Email Form" Library!');
+    $name = $_POST["name"];
 }
 
-$contact = new PHP_Email_Form;
-$contact->ajax = true;
+// EMAIL
+if (empty($_POST["email"])) {
+    $errorMSG .= "Email is required ";
+} else {
+    $email = $_POST["email"];
+}
 
-$contact->to = $receiving_email_address;
-$contact->from_name = $_POST['name'];
-$contact->from_email = $_POST['email'];
-$contact->subject = $_POST['subject'];
+// MSG SUBJECT
+if (empty($_POST["msg_subject"])) {
+    $errorMSG .= "Subject is required ";
+} else {
+    $msg_subject = $_POST["msg_subject"];
+}
 
-// Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-/*
-$contact->smtp = array(
-'host' => 'example.com',
-'username' => 'example',
-'password' => 'pass',
-'port' => '587'
-);
-*/
 
-$contact->add_message( $_POST['name'], 'From');
-$contact->add_message( $_POST['email'], 'Email');
-$contact->add_message( $_POST['message'], 'Message', 10);
+// MESSAGE
+if (empty($_POST["message"])) {
+    $errorMSG .= "Message is required ";
+} else {
+    $message = $_POST["message"];
+}
 
-echo $contact->send();
+//Add your email here
+$EmailTo = "sezeem001@gmail.com";
+$Subject = "New Message Received";
+
+// prepare email body text
+$Body = "";
+$Body .= "Name: ";
+$Body .= $name;
+$Body .= "\n";
+$Body .= "Email: ";
+$Body .= $email;
+$Body .= "\n";
+$Body .= "Subject: ";
+$Body .= $msg_subject;
+$Body .= "\n";
+$Body .= "Message: ";
+$Body .= $message;
+$Body .= "\n";
+
+// send email
+$success = mail($EmailTo, $Subject, $Body, "From:".$email);
+
+}
+
 ?>
